@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Administrador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #e53935;
+        }
+        .admin-actions {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Área do Administrador</h2>
+        <button class="logout-button" onclick="logout()">Sair</button>
+    </div>
+
+    <div class="admin-actions">
+        <h3>Gerenciar Usuários e Links</h3>
+        
+        <!-- Excluir Usuários -->
+        <label for="removeUser">Excluir Usuário:</label>
+        <input type="text" id="removeUser" placeholder="Nome de Usuário">
+        <button onclick="removeUser()">Excluir Usuário</button>
+
+        <!-- Alterar Moedas -->
+        <label for="changeCoins">Alterar Moedas:</label>
+        <input type="text" id="changeCoins" placeholder="Nome de Usuário">
+        <input type="number" id="coinsAmount" placeholder="Quantidade de Moedas">
+        <button onclick="changeCoins()">Alterar Moedas</button>
+
+        <!-- Adicionar Link -->
+        <h3>Adicionar Link</h3>
+        <input type="url" id="videoLink" placeholder="Cole o link do vídeo" required>
+        <button onclick="addLink()">Adicionar Link de Graça</button>
+    </div>
+</div>
+
+<script>
+    // Verifica se o usuário é um administrador
+    window.onload = function() {
+        const isAdmin = localStorage.getItem('isAdmin');
+        if (!isAdmin || isAdmin !== 'true') {
+            window.location.href = 'login.html'; // Se não for admin, redireciona para login
+        }
+    };
+
+    function logout() {
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'login.html'; // Redireciona para login
+    }
+
+    function removeUser() {
+        const username = document.getElementById('removeUser').value;
+        if (username) {
+            localStorage.removeItem(username); // Remove os dados do usuário
+            alert(`Usuário ${username} excluído com sucesso.`);
+        } else {
+            alert('Por favor, insira um nome de usuário.');
+        }
+    }
+
+    function changeCoins() {
+        const username = document.getElementById('changeCoins').value;
+        const coins = parseInt(document.getElementById('coinsAmount').value);
+        if (username && !isNaN(coins)) {
+            const currentCoins = parseInt(localStorage.getItem(username + '_coins')) || 0;
+            localStorage.setItem(username + '_coins', currentCoins + coins); // Atualiza as moedas
+            alert(`Moedas de ${username} alteradas com sucesso.`);
+        } else {
+            alert('Por favor, insira um nome de usuário e a quantidade de moedas.');
+        }
+    }
+
+    function addLink() {
+        const videoLink = document.getElementById('videoLink').value;
+        if (videoLink) {
+            let videoLinks = JSON.parse(localStorage.getItem('videoLinks')) || [];
+            videoLinks.push(videoLink);
+            localStorage.setItem('videoLinks', JSON.stringify(videoLinks)); // Adiciona o link
+            alert('Link de vídeo adicionado com sucesso!');
+        } else {
+            alert('Por favor, insira um link de vídeo válido.');
+        }
+    }
+</script>
+
+</body>
+</html>
